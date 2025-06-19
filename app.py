@@ -153,6 +153,7 @@ with gr.Blocks(css="#chatbot {overflow:auto; height:500px;}") as demo:
             chatbot = gr.Chatbot(elem_id="chatbot", label="gpt")
             state = gr.State([])
             user_tag_output = gr.State("")
+            transcript_output = gr.State("") # 추가
             image_caption_output = gr.State("")
             video_caption_output   = gr.State("")
             model_tag_output = gr.State("")
@@ -174,8 +175,9 @@ with gr.Blocks(css="#chatbot {overflow:auto; height:500px;}") as demo:
     caption.click(lambda: [], None, state)    
     caption.click(inference,[input_video_path,input_tag],[model_tag_output, user_tag_output, image_caption_output, dense_caption_output, chat_video, loadinglabel])
 
-    chat_video.click(bot.init_agent, [image_caption_output, dense_caption_output, model_tag_output], [input_raws,chatbot])
+    chat_video.click(bot.init_agent, [image_caption_output, dense_caption_output, model_tag_output], transcript_output], [input_raws,chatbot])
 
+    
     txt.submit(bot.run_text, [txt, state], [chatbot, state])
     txt.submit(lambda: "", None, txt)
     run.click(bot.run_text, [txt, state], [chatbot, state])
