@@ -66,6 +66,11 @@ bot = StableLMBot()
 
 # --- [수정 4] inference 함수 내에서 텐서를 올바른 GPU로 이동 ---
 def inference(video_path, input_tag, progress=gr.Progress()):
+
+    # Whisper
+    progress(0.05, desc = "Transcribing Audio")
+    transcript_text = transcribe_audio(video_path) # 추가
+    
     data = loadvideo_decord_origin(video_path)
     progress(0.2, desc="Loading Videos")
 
@@ -117,7 +122,7 @@ def inference(video_path, input_tag, progress=gr.Progress()):
     del data, action_tensor, original_image, image,tmp,tmpa
     torch.cuda.empty_cache()
     torch.cuda.ipc_collect()
-    return ' | '.join(tag_1),' | '.join(tag_2), frame_caption, dense_caption, gr.update(interactive = True), prediction
+    return ' | '.join(tag_1),' | '.join(tag_2), frame_caption, dense_caption, gr.update(interactive = True), prediction, transcript_text
 
 def set_example_video(example: list) -> dict:
     return gr.Video.update(value=example[0])
